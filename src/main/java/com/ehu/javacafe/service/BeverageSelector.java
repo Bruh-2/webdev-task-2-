@@ -1,30 +1,27 @@
 package com.ehu.javacafe.service;
 
-
 import com.ehu.javacafe.entity.Beverage;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+@Component
 public class BeverageSelector {
-    private final int amountOfBeverages = new Random().nextInt(1, 4);
-    private final CoffeeService beverageService;
 
-    public BeverageSelector(CoffeeService beverageService) {
-        this.beverageService = beverageService;
+    private final CoffeeService coffeeService;
+
+    public BeverageSelector(CoffeeService coffeeService) {
+        this.coffeeService = coffeeService;
     }
 
     public List<Beverage> selectBeverage() {
-        long beverageCount = beverageService.getBeverageCount();
-        List<Beverage> order = new ArrayList<>();
-        for (int i = 0; i < amountOfBeverages; i++) {
-
-            Random random = new Random();
-            long randomId = random.nextLong(1, beverageCount + 1);
-            Beverage beverageById = beverageService.getBeverageById(randomId);
-            order.add(beverageById);
+        List<Beverage> all = coffeeService.getAllBeverages();
+        List<Beverage> result = new ArrayList<>();
+        if (!all.isEmpty()) {
+            result.add(all.get(new Random().nextInt(all.size())));
         }
-        return order;
+        return result;
     }
 }
